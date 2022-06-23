@@ -12,7 +12,7 @@ LR(k) grammar without using lookahead, Theoretical Computer Science 82 1991
   - P a finite set of productions, and
   - S the start symbol
 
-  - V-Σ is the set of non-terminal symbols,denotedby N
+  - V-Σ is the set of non-terminal symbols,denoted by N
 
 - Let w = a₁,...an, with aᵢ 𝟄 Σ (1≤i≤n) denote the input string to be parsed or
   recognized.
@@ -53,8 +53,9 @@ LR(k) grammar without using lookahead, Theoretical Computer Science 82 1991
 Let I₀ be the set of all items of the form [A→𝜶.𝜷,0] (where A→𝜶𝜷 is a production
 in P, s.t. S⟹⃰A𝜼 for some 𝜼 𝟄 V*), and 𝜶⟹⃰𝝀.
 
-Comment
-: Appears to be the same as Earley initialization
+> **Note** 
+> 
+> Appears to be the same as Earley initialization
 
 [Now assume that the sets I₀,...,Iⱼ₋₁ have already been constructed, and set Iⱼ
 is still empty.]
@@ -64,8 +65,9 @@ is still empty.]
 for each item [A→𝜶.aᵢ𝜹𝜸,i] 𝟄 Iⱼ₋₁, such that 𝜹⟹⃰𝝀, 
 - add [A→𝜶aᵢ𝜹.𝜸,i] to Iⱼ.
 
-Comment
-: Scanning advances past all combinations of nullable symbols.
+> **Note** 
+>
+> Scanning advances past all combinations of nullable symbols.
 
 ## Completer
 
@@ -79,9 +81,10 @@ for each complete item of the form [A→𝜸.,i] in or newly added to Iⱼ
   - for each item [B→𝜶.A𝜹𝜼,k] 𝟄 Iᵢ s.t. 𝜹⟹⃰𝝀
     - add [B→𝜶A𝜹.𝜼,k] to Iⱼ
       
-Comment
-: It appears that the point here is to skip generating intermediate items on the
-  DRP.
+> **Note** 
+>
+> It appears that the point here is to skip generating intermediate
+> items on the DRP.
 
 ## Predictor
 
@@ -97,22 +100,24 @@ An item x is said to be on the deterministic reduction path above [A→𝜸.,i] 
 An item on such a path is called the topmost one if there is no item on the
 deterministic reduction path above it.
 
-Comment
-: The DRP is the chain of unique completions triggered by a completion. The
-  chain stops anywhere a given completion triggers more than one completion.
-  “Above” refers to height in the parse tree, where the root is at the top.
+> **Note**
+>
+> The DRP is the chain of unique completions triggered by a completion. The
+> chain stops anywhere a given completion triggers more than one completion.
+> “Above” refers to height in the parse tree, where the root is at the top.
+>
+> The Leo items in an earleme E lie in wait for the recognition of any symbols
+> that can trigger a chain of completions at a given starting point, and add
+> only the topmost completion in a DRP. As such, intermediate steps may never be
+> represented in the chart and may need to be reconstructed after recognition is
+> complete.  That understanding is supported by this quote from the MARPA doc:
+>
+> > those Earley items eliminated by the Leo logic are actually recreated on an
+> > as-needed basis in the evaluation phase
+>
+> This shortcut may be reused many times as the same topmost symbol is
+> recognized repeatedly with a given start point but different end points.
 
-  The Leo items in an earleme E lie in wait for the recognition of any symbols
-  that can trigger a chain of completions at a given starting point, and add
-  only the topmost completion in a DRP. As such, intermediate steps may never be
-  represented in the chart and may need to be reconstructed after recognition is
-  complete.  That understanding is supported by this quote from the MARPA doc:
-  
-  > those Earley items eliminated by the Leo logic are actually recreated on an
-  > as-needed basis in the evaluation phase
-
-  This shortcut may be reused many times as the same topmost symbol is
-  recognized repeatedly with a given start point but different end points.
 
 <!-- Local Variables: -->
 <!-- fill-column: 80 -->
