@@ -1,3 +1,9 @@
+## Annotated distillation of Joop Leo's 1987 parsing paper
+
+Leo, J. A general context-free parsing algorithm running in linear time on every
+LR(k) grammar without using lookahead, Theoretical Computer Science 82 1991
+165-176
+
 # Notation
 
 - Let G = (V, Σ, P, S) denote an arbitrary context-free grammar, where 
@@ -96,7 +102,17 @@ Comment
   chain stops anywhere a given completion triggers more than one completion.
   “Above” refers to height in the parse tree, where the root is at the top.
 
-To be continued.
+  The Leo items in an earleme E lie in wait for the recognition of any symbols
+  that can trigger a chain of completions at a given starting point, and add
+  only the topmost completion in a DRP. As such, intermediate steps may never be
+  represented in the chart and may need to be reconstructed after recognition is
+  complete.  That understanding is supported by this quote from the MARPA doc:
+  
+  > those Earley items eliminated by the Leo logic are actually recreated on an
+  > as-needed basis in the evaluation phase
+
+  This shortcut may be reused many times as the same topmost symbol is
+  recognized repeatedly with a given start point but different end points.
 
 <!-- Local Variables: -->
 <!-- fill-column: 80 -->
