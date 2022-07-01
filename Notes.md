@@ -67,7 +67,7 @@ items (sans derivations) and clear that set when a new earleme is started.
 
 ## Derivation links
 
-The parse can be thought of as a search through the space of partial matches of
+Recognition can be thought of as a search through the space of partial matches of
 the grammar to the input, looking for complete matches. Each earley item
 represents a state in that search space.  When the parse is unambiguous, the
 states form a binary tree (not a parse tree) with each state being either a
