@@ -100,7 +100,13 @@ discovery in the Earley set.  We can half-stable partition them to the beginning
 of the set in the item array before sorting, and then they can be found by
 offset from the beginning of the set.
 
-We can optimize for unambiguous parses by storing 
+We can optimize for unambiguous parses by using one bit of an Earley item's
+storage to indicate whether its *derivations* field stores a single derivation
+internally, or identifies a sequence of derivations in a derivations table.
+
+## Dealing with Leo items
+
+TODO!
 
 ---------------
 
@@ -119,26 +125,26 @@ Input: E G H
       0 1 2 3
 ```
 
-| Item array index | Earleme 0     | Earleme 1        | Earleme 2    | Earleme 3     | (prefix, predot) / predictor |
-|------------------|---------------|------------------|--------------|---------------|------------------------------|
-| 0                | A -> •B  C    |                  |              |               | *initial*                    |
-| 1                | B -> •D       |                  |              |               | *0*                          |
-| 2                | D -> •E       |                  |              |               | *1*                          |
-| 3                | <............ | [D] -> E •       |              |               | (*2*, *scan*)                |
-| 4                | <............ | [B] -> D •       |              |               | (*1*, **3**)                 |
-| 5                | <............ | A   -> B •C      |              |               | (*0*, **4**)                 |
-| 6                |               | C   ->   •F      |              |               | *5*                          |
-| 7                |               | F   ->   •G H    |              |               | *6*                          |
-| 8                |               | <............... | F -> G •H    |               | (*7*, *scan*)                |
-| 9                |               | <............... | ............ | [F] -> G  H • | (**8**, *scan*)              |
-| 10               |               | <............... | ............ | [C] ->    F • | (*6*, **10**)                |
-| 11               | <............ | ................ | ............ | [A] -> B  C • | (**5**, **10**)              |
+| Item array index | Earleme 0     | Earleme 1        | Earleme 2    | Earleme 3     | derivations     | predictor |
+|------------------|---------------|------------------|--------------|---------------|-----------------|-----------|
+| 0                | A -> •B  C    |                  |              |               |                 | *none*    |
+| 1                | B -> •D       |                  |              |               |                 | 0         |
+| 2                | D -> •E       |                  |              |               |                 | 1         |
+| 3                | <............ | [D] -> E •       |              |               | (2, *scan*)     |           |
+| 4                | <............ | [B] -> D •       |              |               | (1, **3**)      |           |
+| 5                | <............ | A   -> B •C      |              |               | (0, **4**)      |           |
+| 6                |               | C   ->   •F      |              |               |                 | 5         |
+| 7                |               | F   ->   •G H    |              |               |                 | 6         |
+| 8                |               | <............... | F -> G •H    |               | (7, *scan*)     |           |
+| 9                |               | <............... | ............ | [F] -> G  H • | (**8**, *scan*) |           |
+| 10               |               | <............... | ............ | [C] ->    F • | (6, **9**)      |           |
+| 11               | <............ | ................ | ............ | [A] -> B  C • | (**5**, **10**) |           |
 
 
 **Notes**
 - Dotted arrows show the start earlemes of each earley item. 
 - A [bracketed] LHS indicates a completion
-- Only **bold** info in last column needs to be stored.
+- Only **bold** info in derivations column needs to be stored.
 
 <!-- Local Variables: -->
 <!-- fill-column: 80 -->
