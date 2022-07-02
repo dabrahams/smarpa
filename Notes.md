@@ -87,8 +87,6 @@ The leaves in this graph are *prediction items* and *terminal items*.  In fact,
 though, no *prefix* link to a *prediction item* is needed, because it can always
 be fully reconstructed from the item it derives: it is known to be the derived
 item's start earleme with the dot at the beginning of the item's rule's RHS.
-This fact makes it practical to think about representing *prediction items*
-differently from the others.
 
 The sorting of Earley sets upon completion poses no problem for *prefix* links,
 as a prefix item always appears in an an already-sorted prior earleme with a
@@ -104,9 +102,45 @@ We can optimize for unambiguous parses by using one bit of an Earley item's
 storage to indicate whether its *derivations* field stores a single derivation
 internally, or identifies a sequence of derivations in a derivations table.
 
+## Representing Predictions
+
+Many *prediction items* may be generated that never lead anywhere, especially at
+the beginning of a parse.  The fact that derivation links to these items never
+need to be represented makes it practical to think about storing prediction
+items differently from the others.
+
+We can:
+- Store each Earley set's predictions as a bitset of rule ordinals.
+- Precompute the bitset of rules predicted by each symbol in the grammar
+- Union the sets associated with all postdot symbols to get the prediction set.
+- For every symbol s, precompute the bitset of initiating rules whose RHS starts
+  with s
+- When a symbol is s recognized we can intersect its bitset of initiating rules
+  with the prediction set to get the rules that will advance.
+
 ## Dealing with Leo items
 
-TODO!
+The DRP eliminated by Leo's optimization is always a chain of predot items.
+
+### Storage and lookup
+
+WRITEME
+
+### Linking
+
+WRITEME
+
+### Reconstruction of missing items.
+
+Leo optimizes away intermediate items on the DRP of right-recursive rules.  If
+possible, I'd like to avoid creating storage for these items.
+
+## Chart Pruning
+
+What MARPA calls a Bocage is essentially a copy of the recognition chart, but
+omitting all items that never participate in a complete parse.  I'm not sure
+that's a win for unambiguous/low-ambiguity grammars, so I'd like to at least
+have the option to do evaluation directly on the complete chart.
 
 ---------------
 
@@ -139,6 +173,10 @@ Input: E G H
 | 9                |               | <............... | ............ | [F] -> G  H • | (**8**, *scan*) |           |
 | 10               |               | <............... | ............ | [C] ->    F • | (6, **9**)      |           |
 | 11               | <............ | ................ | ............ | [A] -> B  C • | (**5**, **10**) |           |
+
+
+
+
 
 
 **Notes**
